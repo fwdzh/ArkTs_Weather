@@ -1,21 +1,24 @@
+import { getWeather } from '../service/getWeather'
+import { apiRes } from '../models/apiRes'
+
 @Entry
 @Component
 struct Index {
-  @State message: string = 'Hello World';
+  @State getInfo : getWeather = new getWeather()
+  @State res : apiRes = new apiRes()
+  async aboutToAppear(): Promise<void> {
+    try {
+      this.res = await this.getInfo.fetch('420300')
+    } catch (err) {
+      console.log(err)
+      this.res = new apiRes({ info: '获取天气失败' })
+    }
+  }
 
   build() {
-    RelativeContainer() {
-      Text(this.message)
-        .id('HelloWorld')
-        .fontSize($r('app.float.page_text_font_size'))
-        .fontWeight(FontWeight.Bold)
-        .alignRules({
-          center: { anchor: '__container__', align: VerticalAlign.Center },
-          middle: { anchor: '__container__', align: HorizontalAlign.Center }
-        })
-        .onClick(() => {
-          this.message = 'Welcome';
-        })
+    Column(){
+      Text(this.res.toString())
+        .fontSize(30)
     }
     .height('100%')
     .width('100%')
